@@ -35,12 +35,13 @@ class User(db.Model, SerializerMixin):
 
 class Recipe(db.Model, SerializerMixin):
     __tablename__ = 'recipes'
-    
+    __table_args__ = (
+        db.CheckConstraint('length(instructions) >= 50'),
+    )
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    instructions = db.Column(db.String, nullable=False)
-    minutes_to_complete = db.Column(db.Integer)
-
+    instructions = db.Column(db.String, db.CheckConstraint('len(instructions) <50'))
+    minutes_to_complete = db.Column(db.Integer, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     @validates('title')
@@ -49,12 +50,19 @@ class Recipe(db.Model, SerializerMixin):
             return title
         raise ValueError('Title is required')
     
-    @validates('instructions')
-    def validate_instructions(self, key, instructions):
-        if len(instructions) > 50:
-            return instructions
-        else:
-            raise IntegrityError('Instructions must be at least 50 characters long', params={}, orig=None)
+    # @validates('instructions')
+    # def validate_instructions(self, key, instructions):
+    #     if len(instructions) > 50:
+    #         return instructions
+    #     else:
+    #         raise IntegrityError("IntegrityError", params={}, orig=None)
+
+    # @validates('instructions')
+    # def validate_instructions_length(self, key, instructions):
+    #     if len(instructions) < 50:
+    #         raise IntegrityError("IntegrityError", params={}, orig=None)
+    #     else:
+    #         return instructions
     
     def __repr__(self):
         return f'<Recipe {self.title}>'

@@ -72,18 +72,18 @@ class RecipeIndex(Resource):
         if session.get('user_id'):
             data = request.get_json()
 
-            title = data.get('title')
-            instructions = data.get('instructions')
-            minutes_to_complete = data.get('minutes_to_complete')
+            title = data['title']
+            instructions = data['instructions']
+            minutes_to_complete = data['minutes_to_complete']
 
             try:
                 recipe = Recipe(
                     title=title,
                     instructions=instructions,
                     minutes_to_complete=minutes_to_complete,
-                    user_id=session['user_id']
+                    # user_id=session['user_id']
                 )
-                # recipe.user_id = session['user_id']
+
 
                 recipe_dict = recipe.to_dict()
                 recipe.user_id=session['user_id']
